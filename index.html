@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agente IA Veterinario (@IAVETBOT) - Asistente Clínico Inteligente</title>
+  <meta name="description" content="Asistente clínico inteligente veterinario desarrollado con Antigravity y OpenCode, integrado en Telegram para triaje cuantitativo y dosificación farmacológica exacta.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-blue: #0b57d0;       /* Azul Rey vibrante */
+      --deep-navy: #091e42;          /* Azul Marino Oscuro */
+      --dark-navy: #040c1a;          /* Fondo muy oscuro */
+      --gold-accent: #f59e0b;        /* Dorado / Amarillo médico */
+      --gold-light: #fbbf24;
+      --gold-subtle: #fef3c7;
+      --bg-white: #ffffff;
+      --bg-slate: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-light: #94a3b8;
+      --border-color: #e2e8f0;
+      --code-bg: #0f172a;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --shadow-sm: 0 2px 4px rgba(9, 30, 66, 0.04);
+      --shadow-md: 0 10px 25px -5px rgba(11, 87, 208, 0.08), 0 8px 10px -6px rgba(9, 30, 66, 0.04);
+      --shadow-lg: 0 20px 35px -10px rgba(9, 30, 66, 0.12), 0 10px 15px -5px rgba(11, 87, 208, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg-slate);
+      color: var(--text-main);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* BARRA DE NAVEGACIÓN SUPERIOR */
+    .navbar {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--deep-navy);
+      font-weight: 800;
+      font-size: 1.2rem;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-badge {
+      background: linear-gradient(135deg, var(--primary-blue), #1d4ed8);
+      color: white;
+      padding: 0.35rem 0.6rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      box-shadow: 0 2px 8px rgba(11, 87, 208, 0.25);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.92rem;
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary-blue);
+    }
+
+    .btn-nav-telegram {
+      background: linear-gradient(135deg, #0284c7, var(--primary-blue));
+      color: white !important;
+      padding: 0.55rem 1.1rem;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-weight: 700 !important;
+      font-size: 0.88rem !important;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+      transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+    }
+
+    .btn-nav-telegram:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35);
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--deep-navy);
+      cursor: pointer;
+    }
+
+    /* HERO SECTION */
+    .hero {
+      position: relative;
+      background: radial-gradient(circle at 80% 20%, rgba(11, 87, 208, 0.08), transparent 45%),
+                  radial-gradient(circle at 10% 80%, rgba(245, 158, 11, 0.08), transparent 40%),
+                  var(--bg-white);
+      border-bottom: 1px solid var(--border-color);
+      padding: 5rem 1.5rem 4.5rem;
+      overflow: hidden;
+    }
+
+    .hero-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 3.5rem;
+      align-items: center;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(11, 87, 208, 0.08);
+      color: var(--primary-blue);
+      border: 1px solid rgba(11, 87, 208, 0.2);
+      padding: 0.4rem 0.9rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+      letter-spacing: 0.01em;
+    }
+
+    .hero-tag .dot {
+      width: 8px;
+      height: 8px;
+      background: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.9); }
+    }
+
+    .hero h1 {
+      font-size: 3.1rem;
+      font-weight: 800;
+      line-height: 1.15;
+      color: var(--deep-navy);
+      letter-spacing: -0.03em;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero h1 span.highlight {
+      background: linear-gradient(135deg, var(--primary-blue), #2563eb);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero h1 span.bot-id {
+      color: var(--gold-accent);
+      -webkit-text-fill-color: var(--gold-accent);
+      font-size: 0.88em;
+    }
+
+    .hero-desc {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    .hero-badges-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 2.25rem;
+    }
+
+    .tech-pill {
+      background: var(--bg-slate);
+      border: 1px solid var(--border-color);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--deep-navy);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary-blue), #1d4ed8);
+      color: white;
+      text-decoration: none;
+      padding: 0.9rem 1.8rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 1.02rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      box-shadow: 0 10px 20px -5px rgba(11, 87, 208, 0.4);
+      transition: all 0.25s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px -5px rgba(11, 87, 208, 0.5);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--deep-navy);
+      border: 1px solid var(--border-color);
+      text-decoration: none;
+      padding: 0.9rem 1.6rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 1.02rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      transition: all 0.25s ease;
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-slate);
+      border-color: #cbd5e1;
+      transform: translateY(-1px);
+    }
+
+    /* HERO MOCKUP INTERACTIVO */
+    .hero-mockup-wrap {
+      position: relative;
+    }
+
+    .telegram-phone {
+      background: var(--deep-navy);
+      border: 6px solid #1e293b;
+      border-radius: 36px;
+      box-shadow: 0 25px 50px -12px rgba(9, 30, 66, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+      max-width: 380px;
+      margin: 0 auto;
+    }
+
+    .phone-header {
+      background: #0f172a;
+      padding: 1rem 1.25rem 0.9rem;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .bot-avatar {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--gold-accent), #d97706);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: white;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+    }
+
+    .phone-chat-body {
+      background: #0a0f1d;
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      min-height: 440px;
+      font-size: 0.82rem;
+    }
+
+    .chat-bubble {
+      max-width: 88%;
+      padding: 0.75rem 0.95rem;
+      border-radius: 14px;
+      line-height: 1.45;
+      word-wrap: break-word;
+    }
+
+    .bubble-user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, #0284c7, var(--primary-blue));
+      color: white;
+      border-bottom-right-radius: 3px;
+      font-weight: 500;
+    }
+
+    .bubble-bot {
+      align-self: flex-start;
+      background: #1e293b;
+      color: #f1f5f9;
+      border-bottom-left-radius: 3px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.77rem;
+    }
+
+    .bubble-bot .tag-code-red {
+      color: #f87171;
+      font-weight: 700;
+    }
+
+    .bubble-bot .tag-code-green {
+      color: #4ade80;
+      font-weight: 700;
+    }
+
+    .bubble-bot .tag-gold {
+      color: var(--gold-accent);
+      font-weight: 700;
+    }
+
+    /* SECCIONES GENERALES */
+    section {
+      padding: 5rem 1.5rem;
+    }
+
+    .section-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto 3.5rem;
+    }
+
+    .section-subtitle {
+      color: var(--primary-blue);
+      text-transform: uppercase;
+      font-weight: 800;
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+      display: inline-block;
+    }
+
+    .section-title {
+      font-size: 2.3rem;
+      font-weight: 800;
+      color: var(--deep-navy);
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      margin-bottom: 1rem;
+    }
+
+    .section-desc {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+    }
+
+    /* TARJETAS DE MÓDULOS (¿PARA QUÉ SIRVE?) */
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 1.75rem;
+    }
+
+    .module-card {
+      background: var(--bg-white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 2.25rem 2rem;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s ease;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .module-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: rgba(11, 87, 208, 0.3);
+    }
+
+    .module-icon-wrap {
+      width: 54px;
+      height: 54px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .icon-triage {
+      background: rgba(239, 68, 68, 0.12);
+      color: #dc2626;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .icon-dose {
+      background: rgba(11, 87, 208, 0.1);
+      color: var(--primary-blue);
+      border: 1px solid rgba(11, 87, 208, 0.2);
+    }
+
+    .icon-proto {
+      background: rgba(245, 158, 11, 0.12);
+      color: #d97706;
+      border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+
+    .icon-fluid {
+      background: rgba(6, 182, 212, 0.12);
+      color: #0891b2;
+      border: 1px solid rgba(6, 182, 212, 0.25);
+    }
+
+    .icon-thermal {
+      background: rgba(249, 115, 22, 0.12);
+      color: #ea580c;
+      border: 1px solid rgba(249, 115, 22, 0.25);
+    }
+
+    .module-card h3 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--deep-navy);
+      margin-bottom: 0.75rem;
+    }
+
+    .module-card p {
+      color: var(--text-muted);
+      font-size: 0.96rem;
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+      flex-grow: 1;
+    }
+
+    .module-features-list {
+      list-style: none;
+      border-top: 1px solid var(--border-color);
+      padding-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      font-size: 0.88rem;
+      color: var(--text-main);
+    }
+
+    .module-features-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .module-features-list li::before {
+      content: "✓";
+      color: var(--primary-blue);
+      font-weight: 800;
+    }
+
+    /* GUIA CLINICA DE DESHIDRATACION INTERACTIVA */
+    .dehydration-guide-box {
+      margin-top: 3.5rem;
+      background: linear-gradient(135deg, #091e42, #0b57d0);
+      color: white;
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .dehydration-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      padding-bottom: 1.25rem;
+    }
+
+    .dehydration-header h3 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: white;
+    }
+
+    .dehydration-header p {
+      color: #cbd5e1;
+      font-size: 0.95rem;
+    }
+
+    .dehydration-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .dehydration-item {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-sm);
+      padding: 1.2rem;
+      transition: background 0.2s ease;
+    }
+
+    .dehydration-item:hover {
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .pct-tag {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--gold-light);
+      margin-bottom: 0.25rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .pct-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #93c5fd;
+      margin-bottom: 0.5rem;
+    }
+
+    .pct-signs {
+      font-size: 0.82rem;
+      color: #e2e8f0;
+      line-height: 1.45;
+    }
+
+    /* ARQUITECTURA TÉCNICA (¿CÓMO FUNCIONA?) */
+    .arch-section {
+      background: var(--bg-white);
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .arch-flow-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-top: 2rem;
+      position: relative;
+    }
+
+    .arch-card {
+      background: var(--bg-slate);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.75rem 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      position: relative;
+    }
+
+    .arch-step-badge {
+      position: absolute;
+      top: -12px;
+      left: 1.25rem;
+      background: var(--deep-navy);
+      color: var(--gold-accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .arch-file-tag {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--primary-blue);
+      font-weight: 700;
+      font-size: 0.88rem;
+    }
+
+    .arch-card h4 {
+      font-size: 1.05rem;
+      color: var(--deep-navy);
+      font-weight: 700;
+    }
+
+    .arch-card p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .arch-code-preview {
+      background: var(--code-bg);
+      color: #e2e8f0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      padding: 0.6rem 0.75rem;
+      border-radius: var(--radius-sm);
+      margin-top: auto;
+      overflow-x: auto;
+    }
+
+    /* TELEGRAM INTEGRATION SHOWCASE */
+    .telegram-showcase {
+      background: radial-gradient(circle at 50% 10%, rgba(11, 87, 208, 0.05), transparent 70%),
+                  var(--bg-slate);
+    }
+
+    .tg-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: center;
+    }
+
+    .tg-info h3 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--deep-navy);
+      line-height: 1.25;
+      margin-bottom: 1.25rem;
+    }
+
+    .tg-info p {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin-bottom: 1.75rem;
+    }
+
+    .tg-highlights {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2.25rem;
+    }
+
+    .tg-highlight-item {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .tg-h-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(11, 87, 208, 0.1);
+      color: var(--primary-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .tg-mockup-window {
+      background: #0f172a;
+      border-radius: var(--radius-lg);
+      border: 1px solid #1e293b;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .tg-window-header {
+      background: #1e293b;
+      padding: 0.9rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .tg-window-title {
+      color: white;
+      font-weight: 700;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .tg-window-status {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      background: #10b981;
+      border-radius: 50%;
+    }
+
+    .tg-window-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-height: 480px;
+      overflow-y: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+    }
+
+    /* JUSTIFICACIÓN ACADÉMICA */
+    .justification-section {
+      background: var(--bg-white);
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .justification-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.75rem;
+    }
+
+    .just-card {
+      background: var(--bg-slate);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 2rem 1.5rem;
+      transition: all 0.25s ease;
+    }
+
+    .just-card:hover {
+      border-color: var(--primary-blue);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .just-num {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--primary-blue);
+      line-height: 1;
+      margin-bottom: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .just-card h4 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--deep-navy);
+      margin-bottom: 0.6rem;
+    }
+
+    .just-card p {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* VISOR DOCUMENTACIÓN / README.md */
+    .readme-section {
+      background: #040c1a;
+      color: #e2e8f0;
+      position: relative;
+    }
+
+    .readme-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .readme-header h3 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .readme-badge {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--gold-accent);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      padding: 0.25rem 0.6rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .btn-copy-code {
+      background: #1e293b;
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-copy-code:hover {
+      background: #334155;
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .readme-viewer {
+      background: #091322;
+      border: 1px solid #1e293b;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .readme-toolbar {
+      background: #0e1a2f;
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 1px solid #1e293b;
+      font-size: 0.8rem;
+      color: #94a3b8;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .mac-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .mac-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-green { background: #10b981; }
+
+    .readme-content {
+      padding: 2rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: #cbd5e1;
+      max-height: 580px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    /* FOOTER */
+    footer {
+      background: #020712;
+      color: #94a3b8;
+      padding: 3rem 1.5rem;
+      border-top: 1px solid #1e293b;
+      font-size: 0.9rem;
+    }
+
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .footer-brand {
+      color: white;
+      font-weight: 700;
+    }
+
+    .footer-note {
+      font-size: 0.82rem;
+      color: #64748b;
+    }
+
+    /* RESPONSIVE DESIGN */
+    @media (max-width: 992px) {
+      .hero-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .hero-badges-row, .hero-actions {
+        justify-content: center;
+      }
+      .arch-flow-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .tg-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      .mobile-menu-btn {
+        display: block;
+      }
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+      .section-title {
+        font-size: 1.8rem;
+      }
+      .arch-flow-grid {
+        grid-template-columns: 1fr;
+      }
+      .modules-grid {
+        grid-template-columns: 1fr;
+      }
+      .dehydration-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVEGACIÓN SUPERIOR FIJA -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="#" class="brand">
+        <span class="brand-badge">🐾 IAVET</span>
+        <span>Agente IA Veterinario</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#modulos">¿Para qué sirve?</a></li>
+        <li><a href="#deshidratacion">Guía Deshidratación</a></li>
+        <li><a href="#arquitectura">¿Cómo funciona?</a></li>
+        <li><a href="#telegram">Telegram Bot</a></li>
+        <li><a href="#justificacion">Justificación</a></li>
+        <li><a href="#readme">Documentación / README</a></li>
+        <li>
+          <a href="https://t.me/IAVETBOT" target="_blank" rel="noopener" class="btn-nav-telegram">
+            <span>✈️</span> Probar @IAVETBOT
+          </a>
+        </li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- 1. HERO / PORTADA PRINCIPAL -->
+  <section class="hero" id="inicio">
+    <div class="hero-container">
+      <div class="hero-content">
+        <div class="hero-tag">
+          <span class="dot"></span> PROYECTO UNIVERSITARIO DE IA APLICADA
+        </div>
+        <h1>
+          Agente IA Veterinario <br>
+          <span class="bot-id">(@IAVETBOT)</span> <br>
+          <span class="highlight">Triaje Clínico y Dosificación Exacta</span>
+        </h1>
+        <p class="hero-desc">
+          Asistente clínico inteligente desarrollado con la potencia de <strong>Antigravity</strong> y <strong>OpenCode</strong>, integrado directamente en Telegram para clasificar pacientes por puntuación matemática, calcular dosis sin margen de error y consultar protocolos clínicos verificados.
+        </p>
+
+        <div class="hero-badges-row">
+          <span class="tech-pill">⚡ Telegram API Long Polling</span>
+          <span class="tech-pill">🧠 Motor Triaje 5 Parámetros</span>
+          <span class="tech-pill">📐 Aritmética Segura con ast</span>
+          <span class="tech-pill">🛡️ Grounding con protocolos_vet/</span>
+          <span class="tech-pill">💬 Texto Plano Limpio (Sin Markdown)</span>
+        </div>
+
+        <div class="hero-actions">
+          <a href="https://t.me/IAVETBOT" target="_blank" rel="noopener" class="btn-primary">
+            <span>🚀</span> Abrir en Telegram (@IAVETBOT)
+          </a>
+          <a href="#readme" class="btn-secondary">
+            <span>📖</span> Explorar Documentación Técnica
+          </a>
+        </div>
+      </div>
+
+      <!-- MOCKUP TELEGRAM INTERACTIVO -->
+      <div class="hero-mockup-wrap">
+        <div class="telegram-phone">
+          <div class="phone-header">
+            <div class="bot-avatar">🐾</div>
+            <div>
+              <div style="font-weight: 800; font-size: 0.95rem;">IAVETBOT</div>
+              <div style="font-size: 0.72rem; color: #38bdf8;">bot • en línea</div>
+            </div>
+          </div>
+          <div class="phone-chat-body">
+            <div class="chat-bubble bubble-user">
+              /start
+            </div>
+            <div class="chat-bubble bubble-bot">
+              <span class="tag-gold">BIENVENIDO AL AGENTE IA VETERINARIO</span><br><br>
+              1. TRIAJE CLINICO (0 A 15 PUNTOS)<br>
+              2. DOSIFICACION EXACTA EN 3 PASOS<br>
+              3. PLAN DE FLUIDOTERAPIA<br>
+              4. RIESGO TERMICO AMBIENTAL
+            </div>
+            <div class="chat-bubble bubble-user">
+              1. Triaje para Rocky, 14 kg
+            </div>
+            <div class="chat-bubble bubble-bot">
+              <span class="tag-code-red">CLASIFICACION: CODIGO ROJO</span><br>
+              EMERGENCIA CRITICA / 0 MINUTOS<br><br>
+              PUNTAJE: 10 / 15 PUNTOS<br>
+              ALERTA PRIORITARIA: DISNEA GRAVE Y BOQUEO DETECTADO.<br><br>
+              ACCIONES INMEDIATAS:<br>
+              1. DESPEJAR VIA AEREA Y OXIGENO.<br>
+              2. ACCESO VENOSO URGENTE.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. ¿PARA QUÉ SIRVE? (MÓDULOS CLÍNICOS) -->
+  <section id="modulos">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-subtitle">Capacidades del Agente</span>
+        <h2 class="section-title">Módulos Clínicos de Alta Precisión</h2>
+        <p class="section-desc">Diseñado para estudiantes y médicos veterinarios en formación, eliminando la intuición subjetiva y automatizando cálculos críticos.</p>
+      </div>
+
+      <div class="modules-grid">
+        <!-- MODULO 1: TRIAJE CUANTITATIVO -->
+        <div class="module-card">
+          <div class="module-icon-wrap icon-triage">🚨</div>
+          <h3>Triaje Clínico Cuantitativo</h3>
+          <p>
+            Reemplaza la intuición empírica por un sistema estricto de <strong>5 preguntas clínicas obligatorias</strong> (0 a 15 puntos). Clasifica al paciente en Código Verde, Amarillo o Rojo con tiempos de atención definidos y alerta prioritaria ante signos de shock.
+          </p>
+          <ul class="module-features-list">
+            <li>Parámetros: Estado mental, mucosas/TLC, hidratación, respiración y pulso.</li>
+            <li>Alerta prioritaria si pulso ausente, disnea grave o coma.</li>
+            <li>Escala matemática libre de sesgos diagnósticos.</li>
+          </ul>
+        </div>
+
+        <!-- MODULO 2: DOSIFICACION EXACTA -->
+        <div class="module-card">
+          <div class="module-icon-wrap icon-dose">💊</div>
+          <h3>Dosificación Farmacológica Ultra-Concisa</h3>
+          <p>
+            Cálculo matemático directo estructurado estrictamente en <strong>3 pasos limpios en texto plano</strong>: Fórmula, Operación y Resultado. Elimina textos innecesarios y aplica la regla de proporcionalidad dimensional de mg/kg.
+          </p>
+          <ul class="module-features-list">
+            <li>Soporte para líquidos (% y mg/ml) y tabletas sólidas.</li>
+            <li>Protección contra la división errónea de dosis entre peso.</li>
+            <li>Evaluación aritmética segura en Python con módulo <code>ast</code>.</li>
+          </ul>
+        </div>
+
+        <!-- MODULO 3: FLUIDOTERAPIA -->
+        <div class="module-card">
+          <div class="module-icon-wrap icon-fluid">💧</div>
+          <h3>Plan de Fluidoterapia Integral</h3>
+          <p>
+            Calcula en segundos el déficit de deshidratación, volumen de mantenimiento diario (50 ml/kg/día), volumen total de reposición en 24 horas y velocidad de infusión en ml/h y gotas por minuto con normogotero.
+          </p>
+          <ul class="module-features-list">
+            <li>Guía explicativa de deshidratación integrada (5% a 12%).</li>
+            <li>Cálculo con pesos reales fisiológicos de 0.05 a 250 kg.</li>
+            <li>Gotas por minuto para bombas de infusión o goteros manuales.</li>
+          </ul>
+        </div>
+
+        <!-- MODULO 4: PROTOCOLOS Y RIESGO TERMICO -->
+        <div class="module-card">
+          <div class="module-icon-wrap icon-thermal">☀️</div>
+          <h3>Riesgo Térmico & Protocolos Locales</h3>
+          <p>
+            Evalúa el riesgo de golpe de calor en tiempo real consultando la temperatura y humedad meteorológica por ciudad (Open-Meteo), con alertas especiales para razas braquicéfalas y consulta de protocolos clínicos locales.
+          </p>
+          <ul class="module-features-list">
+            <li>Grounding con <code>protocolos_vet/</code> para evitar alucinaciones.</li>
+            <li>Índice de calor y recomendaciones de enfriamiento seguro.</li>
+            <li>Alerta crítica para bulldogs, pugs y gatos persas.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- APARTADO DE DESHIDRATACION SOLICITADO -->
+      <div class="dehydration-guide-box" id="deshidratacion">
+        <div class="dehydration-header">
+          <div>
+            <h3>Guía Clínica de Estimación de Deshidratación en Pacientes</h3>
+            <p>El bot explica al usuario en qué consiste cada porcentaje para ingresar el valor exacto en el cálculo de fluidoterapia:</p>
+          </div>
+          <span class="tech-pill" style="background: rgba(255,255,255,0.15); color: white; border: none;">
+            📚 Fuente: Protocolos de Fluidoterapia Veterinaria
+          </span>
+        </div>
+
+        <div class="dehydration-grid">
+          <div class="dehydration-item">
+            <div class="pct-tag">&lt; 5%</div>
+            <div class="pct-name">Subclínica</div>
+            <div class="pct-signs">No detectable en examen físico. Se sospecha por historia clínica de pérdidas (vómitos leves, diarrea inicial o privación de agua).</div>
+          </div>
+
+          <div class="dehydration-item">
+            <div class="pct-tag">5% - 6%</div>
+            <div class="pct-name">Leve</div>
+            <div class="pct-signs">Mucosas orales ligeramente secas o pegajosas. Pliegue cutáneo dorsal recupera elasticidad en 1 a 2 segundos. Ojos normales.</div>
+          </div>
+
+          <div class="dehydration-item">
+            <div class="pct-tag">7% - 8%</div>
+            <div class="pct-name">Moderada</div>
+            <div class="pct-signs">Mucosas francamente secas, pliegue cutáneo tarda de 2 a 3 segundos en regresar. Hundimiento ocular leve (enoftalmos), tiempo de llenado capilar de 2s.</div>
+          </div>
+
+          <div class="dehydration-item">
+            <div class="pct-tag">9% - 10%</div>
+            <div class="pct-name">Severa</div>
+            <div class="pct-signs">Pliegue cutáneo persistente (más de 3 segundos), mucosas muy secas y pálidas, globos oculares notablemente hundidos, extremidades frías y pulso débil.</div>
+          </div>
+
+          <div class="dehydration-item">
+            <div class="pct-tag">11% - 12%+</div>
+            <div class="pct-name">Crítica / Shock</div>
+            <div class="pct-signs">Signos francos de shock hipovolémico: colapso, estupor o coma, pulso casi imperceptible, llenado capilar &gt; 3s, riesgo inminente de paro cardiovascular.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 3. ¿CÓMO FUNCIONA? (ARQUITECTURA TÉCNICA) -->
+  <section class="arch-section" id="arquitectura">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-subtitle">Ingeniería del Sistema</span>
+        <h2 class="section-title">Arquitectura Modular del Proyecto</h2>
+        <p class="section-desc">Estructura real de archivos y flujo de datos implementado en Python 3.10+, diseñado para alta tolerancia a fallos y bajo acoplamiento.</p>
+      </div>
+
+      <div class="arch-flow-grid">
+        <!-- BLOQUE 1 -->
+        <div class="arch-card">
+          <span class="arch-step-badge">CAPA 1: ENTRADA</span>
+          <div class="arch-file-tag">canal_telegram.py / main.py</div>
+          <h4>Adaptador y Rate Limiting</h4>
+          <p>Escucha mensajes de Telegram vía long polling continuo con <code>requests</code>. Aplica filtro de usuarios, control de tasa (máx 10 msgs/min) y atiende comandos clave como <code>/start</code> y <code>/reset</code>.</p>
+          <div class="arch-code-preview">
+            def ejecutar_telegram(agente, limitador):<br>
+            &nbsp;&nbsp;getUpdates(offset, timeout=30)<br>
+            &nbsp;&nbsp;enviar(chat_id, respuesta)
+          </div>
+        </div>
+
+        <!-- BLOQUE 2 -->
+        <div class="arch-card">
+          <span class="arch-step-badge">CAPA 2: CONTROL</span>
+          <div class="arch-file-tag">flujo_guiado.py</div>
+          <h4>Máquina de Estados de Triaje</h4>
+          <p>Gestiona la captura secuencial de la ficha clínica (nombre, especie, raza, sexo, edad, peso) y las 5 preguntas del cuestionario de triaje con teclados interactivos sin Markdown.</p>
+          <div class="arch-code-preview">
+            TRIAJE_P1 -> TRIAJE_P5<br>
+            total_puntos = sum(pts.values())<br>
+            _evaluar_resultado_triaje(...)
+          </div>
+        </div>
+
+        <!-- BLOQUE 3 -->
+        <div class="arch-card">
+          <span class="arch-step-badge">CAPA 3: RAZONAMIENTO</span>
+          <div class="arch-file-tag">agente.py / cerebro.py</div>
+          <h4>Bucle ReAct & Cerebro Híbrido</h4>
+          <p>Orquesta el razonamiento cognitivo con esquemas JSON estrictos. Permite intercambiar el motor en <code>.env</code> entre <strong>reglas deterministas</strong>, <strong>Ollama local</strong> o <strong>APIs remotas</strong>.</p>
+          <div class="arch-code-preview">
+            {"accion": "usar", "herramienta": "..."}<br>
+            {"accion": "final", "texto": "..."}<br>
+            _limpiar_markdown(texto)
+          </div>
+        </div>
+
+        <!-- BLOQUE 4 -->
+        <div class="arch-card">
+          <span class="arch-step-badge">CAPA 4: HERRAMIENTAS</span>
+          <div class="arch-file-tag">herramientas.py / memoria.py</div>
+          <h4>Cálculo Seguro & Persistencia</h4>
+          <p>Ejecuta operaciones matemáticas seguras con árboles de sintaxis abstracta (<code>ast</code>, sin <code>eval</code>) y persiste el historial conversacional anonimizado en SQLite local.</p>
+          <div class="arch-code-preview">
+            calcular_dosis_clinica(mg_kg, kg)<br>
+            calcular_fluidoterapia(...)<br>
+            SQLite: ultimos 6 mensajes
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. INTEGRACIÓN EN TELEGRAM (@IAVETBOT) -->
+  <section class="telegram-showcase" id="telegram">
+    <div class="section-container">
+      <div class="tg-layout">
+        <div class="tg-info">
+          <span class="section-subtitle">Experiencia Móvil en Tiempo Real</span>
+          <h3>Interacción Clínica Inmediata desde Telegram</h3>
+          <p>
+            Cualquier docente, estudiante o médico veterinario puede interactuar directamente con <strong>@IAVETBOT</strong> sin instalar programas adicionales. El bot responde con teclados táctiles integrados y salidas limpias diseñadas para salas de emergencia.
+          </p>
+
+          <div class="tg-highlights">
+            <div class="tg-highlight-item">
+              <div class="tg-h-icon">✓</div>
+              <div>
+                <strong>Respuestas en Texto Plano Limpio:</strong>
+                <p style="font-size: 0.92rem; color: var(--text-muted); margin: 0;">Sin caracteres Markdown rotos (*, #, _) para máxima compatibilidad con lectores de pantalla y celulares antiguos.</p>
+              </div>
+            </div>
+
+            <div class="tg-highlight-item">
+              <div class="tg-h-icon">✓</div>
+              <div>
+                <strong>Teclados Interactivos de 1 Toque:</strong>
+                <p style="font-size: 0.92rem; color: var(--text-muted); margin: 0;">Botones de Telegram listos para seleccionar puntuaciones de triaje (0, 1, 2 o 3 puntos) sin necesidad de escribir.</p>
+              </div>
+            </div>
+
+            <div class="tg-highlight-item">
+              <div class="tg-h-icon">✓</div>
+              <div>
+                <strong>Disponible 24/7 en la Nube:</strong>
+                <p style="font-size: 0.92rem; color: var(--text-muted); margin: 0;">Configurado en modo público para acceso inmediato de evaluadores universitarios.</p>
+              </div>
+            </div>
+          </div>
+
+          <a href="https://t.me/IAVETBOT" target="_blank" rel="noopener" class="btn-primary" style="font-size: 1.05rem;">
+            <span>✈️</span> Chatear ahora con @IAVETBOT
+          </a>
+        </div>
+
+        <!-- SIMULADOR VISUAL DE CHAT -->
+        <div class="tg-mockup-window">
+          <div class="tg-window-header">
+            <div class="tg-window-title">
+              <span class="tg-window-status"></span>
+              Telegram • Chat con @IAVETBOT
+            </div>
+            <span style="font-size: 0.75rem; color: #94a3b8; font-family: monospace;">TELEGRAM BOT API</span>
+          </div>
+
+          <div class="tg-window-body">
+            <!-- CASO 1: DOSIFICACION -->
+            <div class="chat-bubble bubble-user">
+              Meloxicam 0.2 mg/kg al 0.5% para paciente de 15 kg
+            </div>
+            <div class="chat-bubble bubble-bot">
+              PASO 1: FORMULA<br>
+              DOSIS TOTAL (MG) = DOSIS INDICADA (MG/KG) x PESO DEL PACIENTE (KG)<br>
+              VOLUMEN A ADMINISTRAR (ML) = DOSIS TOTAL (MG) / CONCENTRACION DEL FARMACO (MG/ML)<br><br>
+              PASO 2: OPERACION<br>
+              DOSIS TOTAL = 0.2 MG/KG x 15.0 KG = 3.0 MG<br>
+              CONCENTRACION = 0.5% x 10 = 5.0 MG/ML<br>
+              VOLUMEN = 3.0 MG / 5.0 MG/ML = 0.6 ML<br><br>
+              PASO 3: RESULTADO<br>
+              ADMINISTRAR 0.6 ML (EQUIVALENTE A 3.0 MG TOTALES).<br><br>
+              <span style="color: #94a3b8; font-size: 0.68rem;">AVISO: ESTA ES UNA HERRAMIENTA DE APOYO ACADEMICO; NO SUSTITUYE EL CRITERIO NI LA RESPONSABILIDAD DE UN MEDICO VETERINARIO TITULADO.</span>
+            </div>
+
+            <!-- CASO 2: TRIAJE AMARILLO -->
+            <div class="chat-bubble bubble-user">
+              [Puntaje Total Triaje: 6 Puntos]
+            </div>
+            <div class="chat-bubble bubble-bot">
+              CLASIFICACION FINAL DEL TRIAJE:<br>
+              <span style="color: #facc15; font-weight: 700;">CODIGO AMARILLO (URGENCIA MODERADA / REQUIERE ATENCION PRONTA)</span><br>
+              TIEMPO ESTIMADO DE EVALUACION: 30 A 60 MINUTOS<br><br>
+              ACCIONES RECOMENDADAS:<br>
+              1. UBICAR EN SALA DE ESPERA O PRE-INGRESO BAJO VIGILANCIA.<br>
+              2. NO MEDICAR SIN EXPLORACION VETERINARIA PREVIA.<br>
+              3. EVALUAR REHIDRATACION O TRATAMIENTO MEDICO PRONTO.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. IMPORTANCIA Y JUSTIFICACIÓN EN MEDICINA VETERINARIA -->
+  <section class="justification-section" id="justificacion">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-subtitle">Relevancia e Impacto Clínico</span>
+        <h2 class="section-title">Justificación en la Práctica y Educación Veterinaria</h2>
+        <p class="section-desc">Por qué la integración de agentes de inteligencia artificial deterministas y seguros transforma la formación y el ejercicio clínico.</p>
+      </div>
+
+      <div class="justification-grid">
+        <div class="just-card">
+          <div class="just-num">01</div>
+          <h4>Estandarización del Triaje</h4>
+          <p>
+            Elimina la subjetividad del personal en triage de urgencias. El sistema de puntuación cuantitativa (0 a 15) asegura que cada paciente reciba el color de código exacto basado en signos vitales medibles.
+          </p>
+        </div>
+
+        <div class="just-card">
+          <div class="just-num">02</div>
+          <h4>Cero Margen de Error en Dosis</h4>
+          <p>
+            Los errores de dosificación son la primera causa de iatrogenia farmacológica en medicina de pequeños animales. El agente impone el cálculo dimensional estricto y valida rangos fisiológicos.
+          </p>
+        </div>
+
+        <div class="just-card">
+          <div class="just-num">03</div>
+          <h4>Agilidad en Tiempos Críticos</h4>
+          <p>
+            En salas de urgencias, calcular fluidoterapia o verificar compatibilidad terapéutica toma segundos a través de Telegram, permitiendo enfocar la atención humana en maniobras de reanimación.
+          </p>
+        </div>
+
+        <div class="just-card">
+          <div class="just-num">04</div>
+          <h4>Herramienta Docente Segura</h4>
+          <p>
+            Incorpora filtros éticos contra prescripción indiscriminada, anonimización automática de datos de tutores y aviso obligatorio de supervisión profesional en cada respuesta.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. SECCIÓN FINAL: DOCUMENTACIÓN TÉCNICA (README.md REAL) -->
+  <section class="readme-section" id="readme">
+    <div class="section-container">
+      <div class="readme-header">
+        <div>
+          <h3>
+            <span>📄</span> Documentación Técnica Completa (README.md)
+            <span class="readme-badge">VERIFICADO V2.0</span>
+          </h3>
+          <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 0.3rem;">
+            Contenido íntegro extraído de la raíz del repositorio, listo para clonar, configurar y desplegar.
+          </p>
+        </div>
+
+        <button class="btn-copy-code" onclick="copiarReadme()">
+          <span id="copy-icon">📋</span> <span id="copy-text">Copiar README</span>
+        </button>
+      </div>
+
+      <div class="readme-viewer">
+        <div class="readme-toolbar">
+          <div class="mac-dots">
+            <span class="mac-dot dot-red"></span>
+            <span class="mac-dot dot-yellow"></span>
+            <span class="mac-dot dot-green"></span>
+          </div>
+          <span>Agente IA / README.md</span>
+        </div>
+
+        <pre class="readme-content" id="readme-raw"># Agente IA de Triaje y Apoyo Clínico Veterinario
+
+Asistente académico para estudiantes de Medicina Veterinaria: clasifica urgencias, calcula dosis y fluidoterapia con funciones exactas de Python y consulta protocolos locales. No sustituye a un Médico Veterinario titulado.
+
+## 1. Requisitos
+
+- Python 3.10 o superior.
+- Opcional: Ollama con el modelo llama3.2:3b para usar IA local.
+- Opcional: token de Telegram y un ID de usuario autorizado.
+
+## 2. Instalación
+
+En la carpeta del proyecto:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+Copy-Item .env.example .env
+```
+
+En Linux/macOS:
+`python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt && cp .env.example .env`
+
+## 3. Elegir el cerebro
+
+Edita .env y define CEREBRO:
+
+| Valor | Descripción |
+| --- | --- |
+| ollama (por defecto) | Modelo local llama3.2:3b en http://localhost:11434. Instala Ollama y ejecuta ollama pull llama3.2:3b antes de arrancar. |
+| api | Endpoint compatible con OpenAI/Groq: configura API_BASE, API_KEY y API_MODEL. |
+| reglas | Modo sin IA: decisiones deterministas y herramientas reales. Útil para clase, pruebas o cuando no hay modelo disponible. |
+
+Si Ollama o la API fallan, el agente responde automáticamente con el modo reglas.
+
+## 4. Ejecutar en consola
+
+```powershell
+python main.py --canal consola
+```
+
+También es el valor por defecto: python main.py.
+
+Ejemplos:
+- Clasifica el triaje de un gato con disnea grave
+- Calcula la dosis de 10 mg/kg para un perro de 12 kg
+- Fluidoterapia para un perro de 10 kg con 6% de deshidratación
+- ¿Cuál es el riesgo de golpe de calor en Medellín para un bulldog?
+- /reset
+- /salir
+
+Límites activos: 10 mensajes por minuto y 1500 caracteres por mensaje. /reset borra los últimos mensajes guardados para ese chat.
+
+## 5. Ejecutar en Telegram
+
+1. Crea un bot con BotFather y copia el token a TELEGRAM_TOKEN en .env.
+2. Obtén tu ID numérico de usuario y ponlo en TELEGRAM_ADMINS (varios IDs separados por comas).
+3. Arranca:
+
+```powershell
+python main.py --canal telegram
+```
+
+El adaptador usa long polling con requests.
+
+## 6. Pruebas automatizadas
+
+```powershell
+python tests/evaluar.py
+```
+
+Ejecuta 6 casos clínicos (dosis, fluidoterapia, triaje, riesgo térmico con clima simulado, peso negativo e inyección de prompt) usando CEREBRO=reglas. Imprime aciertos, tasa de éxito y latencia media.
+
+## 7. Estructura
+
+- main.py: Entrada, canales y rate limit
+- agente.py: Prompt sistema, ReAct (4 pasos), JSON estricto y 1 reintento
+- cerebro.py: ollama | api | reglas
+- herramientas.py: Dosis (ast), fluidoterapia, protocolos y Open-Meteo
+- flujo_guiado.py: Máquina de estados conversacional, triaje 5 parámetros y ficha
+- memoria.py: SQLite: últimos 6 mensajes por chat y /reset
+- canal_telegram.py: Long polling + menús y teclados interactivos
+- protocolos_vet/: Única fuente de verdad clínica (grounding)
+- tests/evaluar.py: Evaluación con 6 casos
+- datos/agente.sqlite3: Base de datos local (se crea automáticamente)
+
+## 8. Seguridad y ética
+
+- Los cálculos se ejecutan con ast, nunca con eval().
+- El triaje solo se responde con fragmentos de protocolos_vet/.
+- Si falta el peso u otro dato indispensable, el agente lo pide antes de operar.
+- Se ignoran instrucciones para saltarse reglas, desactivar el aviso o emitir recetas médicas.
+- La memoria anonimiza correos, teléfonos e identificadores obvios; usa únicamente casos ficticios.
+- Toda respuesta clínica lleva el aviso de apoyo académico y no sustitución profesional.</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-container">
+      <div>
+        <div class="footer-brand">🐾 Agente IA Veterinario (@IAVETBOT)</div>
+        <div class="footer-note">Desarrollado para evaluación académica de Inteligencia Artificial en Medicina Veterinaria.</div>
+      </div>
+      <div>
+        <a href="https://t.me/IAVETBOT" target="_blank" rel="noopener" style="color: #38bdf8; text-decoration: none; font-weight: 600;">
+          Abrir @IAVETBOT en Telegram ↗
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function copiarReadme() {
+      const texto = document.getElementById('readme-raw').innerText;
+      navigator.clipboard.writeText(texto).then(() => {
+        const btnText = document.getElementById('copy-text');
+        const icon = document.getElementById('copy-icon');
+        btnText.innerText = '¡Copiado!';
+        icon.innerText = '✅';
+        setTimeout(() => {
+          btnText.innerText = 'Copiar README';
+          icon.innerText = '📋';
+        }, 2500);
+      }).catch(err => {
+        alert('No se pudo copiar automáticamente. Puedes seleccionar el texto manualmente.');
+      });
+    }
+  </script>
+</body>
+</html>
